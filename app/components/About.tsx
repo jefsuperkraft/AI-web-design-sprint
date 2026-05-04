@@ -1,3 +1,9 @@
+"use client";
+
+import { useRef, useEffect } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
 const MONO: React.CSSProperties = { fontFamily: "var(--font-geist-mono), monospace" };
 
 const PORTRAIT =
@@ -19,8 +25,60 @@ function CornerBrackets({ children }: { children: React.ReactNode }) {
 }
 
 export default function About() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const textBoxRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+
+    const ctx = gsap.context(() => {
+
+      // Portrait reveal — each .portrait-wrapper triggers independently so the
+      // mobile portrait (lower in the DOM) fires when IT enters the viewport.
+      gsap.utils.toArray<HTMLElement>(".portrait-wrapper", sectionRef.current!).forEach((wrapper) => {
+        const overlay = wrapper.querySelector<HTMLElement>(".portrait-overlay");
+        if (!overlay) return;
+
+        // clip-path wipe: right side of overlay disappears first → image reveals right→left
+        // inset(top right bottom left): right goes 0%→100% collapses the overlay from its right edge
+        gsap.to(overlay, {
+          clipPath: "inset(0 100% 0 0)",
+          duration: 1.2,
+          ease: "power2.inOut",
+          scrollTrigger: {
+            trigger: wrapper,
+            start: "top 70%",
+            once: true,
+          },
+        });
+      });
+
+      // Text-box parallax — desktop only, slides left as section scrolls through
+      const mm = gsap.matchMedia();
+      mm.add("(min-width: 768px)", () => {
+        gsap.to(textBoxRef.current, {
+          x: "-22vw",
+          ease: "none",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 2,
+          },
+        });
+      });
+
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section className="bg-white px-4 md:px-8 py-12 md:py-20">
+    <section
+      ref={sectionRef}
+      className="bg-white px-4 md:px-8 py-12 md:py-20"
+      style={{ overflowX: "clip" }}
+    >
 
       {/* ── MOBILE: vertical stack ── */}
       <div className="md:hidden flex flex-col gap-5">
@@ -35,24 +93,30 @@ export default function About() {
             {BIO}
           </p>
         </CornerBrackets>
-        <div className="w-full overflow-hidden" style={{ aspectRatio: "422/594" }}>
+
+        {/* Mobile portrait with reveal overlay */}
+        <div
+          className="portrait-wrapper relative w-full overflow-hidden"
+          style={{ aspectRatio: "422/594" }}
+        >
           <img src={PORTRAIT} alt="" className="w-full h-full object-cover" />
+          <div className="portrait-overlay absolute inset-0 bg-black" style={{ clipPath: "inset(0 0% 0 0)" }} />
         </div>
       </div>
 
-      {/* ── DESKTOP: [ About ] left  |  text (bottom) + 002+image (right) ── */}
+      {/* ── DESKTOP ── */}
       <div className="hidden md:flex items-start justify-between">
 
-        {/* [ About ] label — top-left, isolated */}
+        {/* [ About ] label — top-left */}
         <p className="text-[14px] uppercase leading-[1.1] text-[#1f1f1f] shrink-0" style={MONO}>
           [ About ]
         </p>
 
-        {/* Right block — text block + image, bottom-aligned */}
+        {/* Right block — text + image, bottom-aligned */}
         <div className="flex gap-8 items-end" style={{ width: "71.4%" }}>
 
-          {/* Text with corner brackets — grows to fill space, sits at bottom */}
-          <div className="flex-1 min-w-0">
+          {/* Text box — slides left on scroll */}
+          <div ref={textBoxRef} className="flex-1 min-w-0">
             <CornerBrackets>
               <p className="text-[14px] leading-[1.3] tracking-[-0.56px] text-[#1f1f1f]">
                 {BIO}
@@ -60,16 +124,17 @@ export default function About() {
             </CornerBrackets>
           </div>
 
-          {/* 002 label + portrait */}
+          {/* 002 label + portrait with reveal overlay */}
           <div className="flex gap-6 items-start shrink-0">
             <p className="text-[14px] uppercase leading-[1.1] text-[#1f1f1f]" style={MONO}>
               002
             </p>
             <div
-              className="overflow-hidden shrink-0"
+              className="portrait-wrapper relative overflow-hidden shrink-0"
               style={{ width: "30.3vw", aspectRatio: "436/614" }}
             >
               <img src={PORTRAIT} alt="" className="w-full h-full object-cover" />
+              <div className="portrait-overlay absolute inset-0 bg-black" style={{ clipPath: "inset(0 0% 0 0)" }} />
             </div>
           </div>
 

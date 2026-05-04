@@ -1,0 +1,74 @@
+{
+  "_id": "servicesPage",
+  "_type": "servicesPage",
+  "heroTagline": "A full-service creative studio.",
+  "heroDescription": "From brand identity to web design, we craft experiences that endure. Our process is deliberate, our execution obsessive — and the results speak for themselves.",
+  "heroStats": [
+    { "_key": "hs-1", "_type": "heroStat", "value": "7",    "label": "Core services" },
+    { "_key": "hs-2", "_type": "heroStat", "value": "120+", "label": "Projects delivered" },
+    { "_key": "hs-3", "_type": "heroStat", "value": "2016", "label": "Est. Chicago, IL" }
+  ],
+  "packages": [
+    {
+      "_key": "pkg-1",
+      "_type": "servicePackage",
+      "name": "Essentials",
+      "tagline": "Brand foundations for emerging studios.",
+      "description": "Everything you need to launch with confidence — a clean visual identity and a digital presence that means business.",
+      "featured": false,
+      "includes": ["Logo & wordmark", "Colour & type system", "Brand guidelines", "1-page web presence", "2 revision rounds"]
+    },
+    {
+      "_key": "pkg-2",
+      "_type": "servicePackage",
+      "name": "Studio",
+      "tagline": "The full creative partnership.",
+      "description": "Our most popular engagement. A deep collaboration spanning brand direction, photography, and a fully custom web experience.",
+      "featured": true,
+      "includes": ["Full brand identity", "Photography direction", "Custom web design & build", "Motion & micro-interactions", "Ongoing support (3 months)", "Unlimited revisions"]
+    },
+    {
+      "_key": "pkg-3",
+      "_type": "servicePackage",
+      "name": "Enterprise",
+      "tagline": "Scaled systems for growing brands.",
+      "description": "Built for organisations that need a cohesive creative system across multiple channels — from internal tooling to global campaigns.",
+      "featured": false,
+      "includes": ["Multi-brand system", "Campaign art direction", "Web platform design", "Design system documentation", "Dedicated creative lead", "12-month retainer option"]
+    }
+  ],
+  "faq": [
+    {
+      "_key": "faq-1",
+      "_type": "faqItem",
+      "question": "How long does a typical project take?",
+      "answer": "Most brand identity projects run 6–10 weeks. Full studio engagements (brand + web) typically span 12–16 weeks. We'll scope your project precisely during our discovery call."
+    },
+    {
+      "_key": "faq-2",
+      "_type": "faqItem",
+      "question": "Do you work with clients outside Chicago?",
+      "answer": "Absolutely. We work with clients globally and collaborate primarily through video calls, shared Figma files, and async updates. Distance has never been a barrier to good work."
+    },
+    {
+      "_key": "faq-3",
+      "_type": "faqItem",
+      "question": "What does your onboarding process look like?",
+      "answer": "We start with a 60-minute discovery call to understand your goals, audience, and constraints. From there we scope the project, agree on a timeline, and kick off with a comprehensive brand audit."
+    },
+    {
+      "_key": "faq-4",
+      "_type": "faqItem",
+      "question": "Can I hire you for just one service?",
+      "answer": "Yes. While our packages bundle the most common combinations, we're happy to scope a standalone photography project, a web redesign, or a brand refresh. Reach out and we'll figure out what fits."
+    },
+    {
+      "_key": "faq-5",
+      "_type": "faqItem",
+      "question": "What are your payment terms?",
+      "answer": "We invoice 50% upfront and 50% on delivery. For retainer arrangements we invoice monthly. We accept bank transfer and all major cards."
+    }
+  ],
+  "ctaHeading": "Ready to make something worth remembering?",
+  "ctaDescription": "Every great project starts with a conversation. Tell us about your brand, your goals, and the audience you want to reach."
+}

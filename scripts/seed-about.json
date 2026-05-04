@@ -1,0 +1,41 @@
+{
+  "_id": "aboutPage",
+  "_type": "aboutPage",
+  "name": "Harvey Specter",
+  "heroTagline": "Eight years of brand direction, photography, and digital design — all in service of work that endures.",
+  "heroTags": ["Creative Director", "Photographer", "Chicago, IL"],
+  "pullQuote": "Design is not just how it looks — it's how it makes people feel.",
+  "bio": "Born and raised on the south side of Chicago, I grew up surrounded by raw creativity — street murals, jazz, architecture that refused to be ordinary. That environment shaped the way I see the world and, ultimately, the way I work.\n\nOver the past eight years, I've collaborated with brands ranging from independent artists to global studios, helping them distil their identity into something people actually remember. My process is rigorous and intuitive in equal measure.\n\nToday, H.Studio is my vehicle for that work. A full-service creative studio where brand direction, photography, and web design converge into experiences that endure.",
+  "stats": [
+    { "_key": "stat-a", "_type": "stat", "value": "8+",   "label": "Years experience" },
+    { "_key": "stat-b", "_type": "stat", "value": "120+", "label": "Projects delivered" },
+    { "_key": "stat-c", "_type": "stat", "value": "40+",  "label": "Brands elevated" }
+  ],
+  "expertise": [
+    { "_key": "exp-1", "_type": "expertiseItem", "title": "Photography",    "description": "Documenting culture, people, and ideas through a lens that captures the unseen moment before it disappears." },
+    { "_key": "exp-2", "_type": "expertiseItem", "title": "Brand Direction", "description": "Building visual identities that speak with authority and resonate deeply with the right audience." },
+    { "_key": "exp-3", "_type": "expertiseItem", "title": "Web Design",     "description": "Crafting digital experiences that are as functional as they are breathtaking to move through." },
+    { "_key": "exp-4", "_type": "expertiseItem", "title": "Art Direction",  "description": "Leading creative vision across campaigns, editorial shoots, and long-form brand systems." },
+    { "_key": "exp-5", "_type": "expertiseItem", "title": "Motion Design",  "description": "Bringing static design to life with purposeful, elegant animation that adds meaning — never noise." }
+  ],
+  "philosophyLines": [
+    "Great design",
+    "is never an accident —",
+    "it is the result of",
+    "intention,",
+    "craft & obsession."
+  ],
+  "processSteps": [
+    { "_key": "proc-1", "_type": "processStep", "title": "Discover", "description": "Before a single pixel is drawn, we go deep. Your brand, your goals, your audience — and the space you want to own." },
+    { "_key": "proc-2", "_type": "processStep", "title": "Define",   "description": "Insight becomes direction. We align on creative strategy, visual language, and what success actually looks like." },
+    { "_key": "proc-3", "_type": "processStep", "title": "Design",   "description": "The craft phase. Obsessive, pixel-perfect execution across every touchpoint and every deliverable." },
+    { "_key": "proc-4", "_type": "processStep", "title": "Deliver",  "description": "Launch with intention. We refine, test, and hand off work built to last — then stay in your corner." }
+  ],
+  "awards": [
+    { "_key": "aw-1", "_type": "awardItem", "year": "2024", "award": "Site of the Day",   "org": "Awwwards" },
+    { "_key": "aw-2", "_type": "awardItem", "year": "2024", "award": "Best Portfolio",    "org": "CSS Design Awards" },
+    { "_key": "aw-3", "_type": "awardItem", "year": "2023", "award": "Site of the Month", "org": "FWA" },
+    { "_key": "aw-4", "_type": "awardItem", "year": "2023", "award": "Developer Award",   "org": "Awwwards" },
+    { "_key": "aw-5", "_type": "awardItem", "year": "2022", "award": "Featured Project",  "org": "Behance" }
+  ]
+}

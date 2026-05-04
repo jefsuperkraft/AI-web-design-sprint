@@ -4,6 +4,9 @@ import About from "./components/About";
 import FullBleed from "./components/FullBleed";
 import Services from "./components/Services";
 import Work from "./components/Work";
+import Testimonials from "./components/Testimonials";
+import News from "./components/News";
+import Footer from "./components/Footer";
 import { sanityFetch } from "@/sanity/lib/live";
 import { portfolioQuery, deliverablesQuery } from "@/sanity/lib/queries";
 import type { PortfolioItem } from "./components/Work";
@@ -16,13 +19,20 @@ export default async function Home() {
   ]);
 
   return (
-    <main>
-      <Hero />
-      <Tagline />
-      <About />
-      <FullBleed />
-      <Services items={(deliverableItems as DeliverableItem[]) ?? []} />
-      <Work items={(portfolioItems as PortfolioItem[]) ?? []} />
-    </main>
+    <>
+      <div className="relative z-[1]">
+        <main>
+          <Hero />
+          <Tagline />
+          <About />
+          <FullBleed />
+          <Services items={(deliverableItems as DeliverableItem[]) ?? []} />
+          <Work items={(portfolioItems as PortfolioItem[]) ?? []} />
+          <Testimonials />
+          <News />
+        </main>
+      </div>
+      <Footer />
+    </>
   );
 }

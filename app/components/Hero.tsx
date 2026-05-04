@@ -1,14 +1,15 @@
 "use client";
 
 import { useRef, useEffect } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Navbar from "./Navbar";
+import MagneticButton from "./MagneticButton";
 
 const HERO_IMAGE =
   "https://www.figma.com/api/mcp/asset/f037f145-9158-401e-904b-291a478ce1f0";
 
-// Scales the font-size so the text fills the container width exactly.
-// Uses an inner inline <span> to measure natural text width, avoiding
-// the block-element scrollWidth trap (block elements fill their container).
+// Single-word fit line (mobile)
 function FitLine({
   children,
   lineHeight = 1,
@@ -22,30 +23,23 @@ function FitLine({
 
   useEffect(() => {
     let ro: ResizeObserver | null = null;
-
     const fit = () => {
       const container = containerRef.current;
       const line = lineRef.current;
       const span = spanRef.current;
       if (!container || !line || !span) return;
-
       const containerWidth = container.getBoundingClientRect().width;
-      if (containerWidth === 0) return; // element is hidden (display:none)
-
+      if (containerWidth === 0) return;
       line.style.fontSize = "100px";
       const textWidth = span.getBoundingClientRect().width;
       if (textWidth <= 0) return;
-
       line.style.fontSize = `${(100 * containerWidth) / textWidth}px`;
     };
-
-    // Measure only after the actual font is loaded
     document.fonts.ready.then(() => {
       fit();
       ro = new ResizeObserver(fit);
       if (containerRef.current) ro.observe(containerRef.current);
     });
-
     return () => ro?.disconnect();
   }, []);
 
@@ -62,11 +56,98 @@ function FitLine({
   );
 }
 
-export default function Hero() {
+// Two-word fit line (desktop): both words sized together to fill the container,
+// but each is an inline-block span so GSAP can animate them independently.
+function SplitFitLine({
+  first,
+  second,
+  firstClass,
+  secondClass,
+  lineHeight = 1,
+}: {
+  first: string;
+  second: string;
+  firstClass?: string;
+  secondClass?: string;
+  lineHeight?: number;
+}) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const lineRef = useRef<HTMLDivElement>(null);
+  const measureRef = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    let ro: ResizeObserver | null = null;
+    const fit = () => {
+      const container = containerRef.current;
+      const line = lineRef.current;
+      const measure = measureRef.current;
+      if (!container || !line || !measure) return;
+      const containerWidth = container.getBoundingClientRect().width;
+      if (containerWidth === 0) return;
+      line.style.fontSize = "100px";
+      const textWidth = measure.getBoundingClientRect().width;
+      if (textWidth <= 0) return;
+      line.style.fontSize = `${(100 * containerWidth) / textWidth}px`;
+    };
+    document.fonts.ready.then(() => {
+      fit();
+      ro = new ResizeObserver(fit);
+      if (containerRef.current) ro.observe(containerRef.current);
+    });
+    return () => ro?.disconnect();
+  }, []);
+
   return (
-    <section className="relative h-screen min-h-[635px] flex flex-col px-4 md:px-8 overflow-hidden">
+    <div ref={containerRef} className="w-full">
+      <div
+        ref={lineRef}
+        className="text-white mix-blend-overlay capitalize font-medium whitespace-nowrap"
+        style={{ letterSpacing: "-0.07em", lineHeight, fontSize: "14vw" }}
+      >
+        {/* measureRef wraps both words so font-size is scaled to fit them together */}
+        <span ref={measureRef}>
+          <span className={firstClass} style={{ display: "inline-block" }}>{first}</span>
+          {" "}
+          <span className={secondClass} style={{ display: "inline-block" }}>{second}</span>
+        </span>
+      </div>
+    </div>
+  );
+}
+
+export default function Hero() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const bgRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+
+    const ctx = gsap.context(() => {
+      gsap.timeline({
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top top",
+          end: "bottom top",
+          scrub: 1,
+        },
+      })
+        .to(".hero-harvey",  { x: "-35vw", ease: "none" }, 0)
+        .to(".hero-specter", { x: "35vw",  ease: "none" }, 0)
+        .to(".hero-hello",   { x: "-17vw", ease: "none" }, 0)
+        .to(bgRef.current,   { scale: 1.12, ease: "none" }, 0);
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <section
+      ref={sectionRef}
+      data-nav-dark
+      className="relative h-screen min-h-[635px] flex flex-col px-4 md:px-8 overflow-hidden"
+    >
       {/* Background image */}
-      <div className="absolute inset-0">
+      <div ref={bgRef} className="absolute inset-0">
         <img
           src={HERO_IMAGE}
           alt=""
@@ -77,19 +158,18 @@ export default function Hero() {
       {/* Bottom blur/frost overlay */}
       <div className="absolute bottom-0 left-0 right-0 h-[349px] backdrop-blur-[10px] bg-[rgba(217,217,217,0.01)]" />
 
-      {/* Navbar */}
       <Navbar />
 
-      {/* Push content toward bottom */}
       <div className="flex-1" />
 
       {/* Hero content */}
       <div className="relative pb-8 md:pb-14 flex flex-col">
 
-        {/* Name block */}
         <div className="w-full">
           {/* "[Hello I'm]" label */}
-          <div className="flex items-center justify-center md:justify-start px-[18px] mb-[-15px]">
+          <div
+            className="hero-hello flex items-center justify-center md:justify-start px-[18px] mb-[-15px]"
+          >
             <p
               className="text-[14px] text-white uppercase mix-blend-overlay leading-[1.1]"
               style={{ fontFamily: "var(--font-geist-mono), monospace" }}
@@ -98,19 +178,26 @@ export default function Hero() {
             </p>
           </div>
 
-          {/* Mobile: two lines, each word fills container width */}
+          {/* Mobile: Harvey and Specter each fill the line separately */}
           <div className="md:hidden">
-            <FitLine lineHeight={0.82}>Harvey</FitLine>
-            <FitLine lineHeight={0.82}>Specter</FitLine>
+            <div className="hero-harvey"><FitLine lineHeight={0.82}>Harvey</FitLine></div>
+            <div className="hero-specter"><FitLine lineHeight={0.82}>Specter</FitLine></div>
           </div>
 
-          {/* Desktop: single line fills container width */}
+          {/* Desktop: "Harvey Specter" fills one line; each word is a separate
+              inline-block span so GSAP can split them left/right on scroll */}
           <div className="hidden md:block">
-            <FitLine lineHeight={1.1}>Harvey Specter</FitLine>
+            <SplitFitLine
+              first="Harvey"
+              second="Specter"
+              firstClass="hero-harvey"
+              secondClass="hero-specter"
+              lineHeight={1.1}
+            />
           </div>
         </div>
 
-        {/* Description + CTA — right on desktop, left on mobile */}
+        {/* Description + CTA */}
         <div className="flex md:justify-end justify-start w-full mt-6 md:mt-0">
           <div className="flex flex-col gap-[17px] w-[293px] md:w-[294px]">
             <p className="font-bold italic uppercase text-[#1f1f1f] text-[14px] tracking-[-0.56px] leading-[1.1]">
@@ -122,12 +209,12 @@ export default function Hero() {
               design and art group specializing in branding, web design and
               engineering.
             </p>
-            <a
+            <MagneticButton
               href="#contact"
-              className="self-start bg-black text-white text-[14px] font-medium tracking-[-0.56px] rounded-[24px] px-[16px] py-[12px] hover:opacity-80 transition-opacity duration-200"
+              className="self-start bg-black text-white text-[14px] font-medium tracking-[-0.56px] rounded-[24px] px-[16px] py-[12px]"
             >
               Let&apos;s talk
-            </a>
+            </MagneticButton>
           </div>
         </div>
 

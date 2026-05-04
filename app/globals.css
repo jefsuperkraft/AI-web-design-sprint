@@ -3,3 +3,33 @@
 :root {
   font-family: var(--font-inter), sans-serif;
 }
+
+.scroll-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Mobile nav — initial hidden state so SSR HTML matches client pre-hydration */
+.mobile-overlay {
+  transform: translateX(-100%);
+  visibility: hidden;
+}
+.mobile-nav-link {
+  opacity: 0;
+}
+
+/* Desktop nav underline — driven by GSAP via --uw CSS variable */
+.nav-desktop-link {
+  position: relative;
+  --uw: 0; /* must be set here so GSAP can read and tween the initial value */
+}
+.nav-desktop-link::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: currentColor;
+  transform-origin: left center;
+  transform: scaleX(var(--uw));
+}

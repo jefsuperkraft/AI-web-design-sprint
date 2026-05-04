@@ -1,5 +1,10 @@
+"use client";
+
+import { useRef } from "react";
+import gsap from "gsap";
 import { urlFor } from '@/sanity/lib/image'
 import type { SanityImageSource } from '@sanity/image-url'
+import MagneticButton from './MagneticButton'
 
 const MONO: React.CSSProperties = { fontFamily: "var(--font-geist-mono), monospace" };
 
@@ -15,7 +20,6 @@ export type PortfolioItem = {
   link?: string;
 };
 
-// Alternates tall/short per position to recreate the staggered Figma heights
 const DESKTOP_HEIGHTS = [744, 699, 699, 744];
 const desktopHeight = (i: number) => DESKTOP_HEIGHTS[i % DESKTOP_HEIGHTS.length];
 
@@ -67,12 +71,12 @@ function CTABox() {
       >
         {CTA_TEXT}
       </p>
-      <button
+      <MagneticButton
         className="self-start bg-black text-white text-[14px] font-medium px-4 py-3 rounded-full whitespace-nowrap"
         style={{ letterSpacing: "-0.04em" }}
       >
         Let&apos;s talk
-      </button>
+      </MagneticButton>
     </div>
   );
 }
@@ -86,6 +90,10 @@ function WorkCard({
   heightPx: number;
   titleSize: string;
 }) {
+  const imgRef     = useRef<HTMLImageElement>(null);
+  const titleRef   = useRef<HTMLParagraphElement>(null);
+  const arrowRef   = useRef<HTMLDivElement>(null);
+
   const imgSrc = urlFor(item.coverImage)
     .auto('format')
     .width(Math.round(heightPx * 0.75))
@@ -93,10 +101,27 @@ function WorkCard({
     .fit('crop')
     .url();
 
+  function onEnter() {
+    gsap.to(imgRef.current,   { scale: 1.06, duration: 0.55, ease: "power2.out" });
+    gsap.to(titleRef.current, { x: 10, duration: 0.4, ease: "power2.out" });
+    gsap.to(arrowRef.current, { x: 4, y: -4, duration: 0.4, ease: "power2.out" });
+  }
+
+  function onLeave() {
+    gsap.to(imgRef.current,   { scale: 1, duration: 0.6, ease: "power2.inOut" });
+    gsap.to(titleRef.current, { x: 0, duration: 0.6, ease: "back.out(2.5)" });
+    gsap.to(arrowRef.current, { x: 0, y: 0, duration: 0.5, ease: "back.out(2)" });
+  }
+
   const card = (
-    <div className="flex flex-col gap-[10px]">
+    <div
+      className="flex flex-col gap-[10px] cursor-pointer"
+      onMouseEnter={onEnter}
+      onMouseLeave={onLeave}
+    >
       <div className="relative overflow-hidden" style={{ height: `${heightPx}px` }}>
         <img
+          ref={imgRef}
           src={imgSrc}
           alt={item.title}
           className="absolute inset-0 w-full h-full object-cover"
@@ -107,12 +132,15 @@ function WorkCard({
       </div>
       <div className="flex items-center justify-between">
         <p
+          ref={titleRef}
           className={`font-black ${titleSize} leading-[1.1] text-black uppercase`}
           style={{ letterSpacing: "-0.04em" }}
         >
           {item.title}
         </p>
-        <ArrowIcon />
+        <div ref={arrowRef}>
+          <ArrowIcon />
+        </div>
       </div>
     </div>
   );
@@ -127,8 +155,7 @@ function WorkCard({
 }
 
 export default function Work({ items }: { items: PortfolioItem[] }) {
-  // Split into left (even indices) and right (odd indices) columns for desktop
-  const leftCol = items.filter((_, i) => i % 2 === 0);
+  const leftCol  = items.filter((_, i) => i % 2 === 0);
   const rightCol = items.filter((_, i) => i % 2 !== 0);
 
   return (
@@ -155,7 +182,7 @@ export default function Work({ items }: { items: PortfolioItem[] }) {
         </div>
 
         <div className="flex flex-col gap-6">
-          {items.map((item, i) => (
+          {items.map((item) => (
             <WorkCard key={item._id} item={item} heightPx={390} titleSize="text-[24px]" />
           ))}
         </div>
@@ -165,7 +192,6 @@ export default function Work({ items }: { items: PortfolioItem[] }) {
 
       {/* ── DESKTOP ── */}
       <div className="hidden md:flex flex-col gap-[61px]">
-        {/* Header */}
         <div className="flex items-start justify-between">
           <div className="flex items-start gap-3">
             <div
@@ -189,9 +215,7 @@ export default function Work({ items }: { items: PortfolioItem[] }) {
           </div>
         </div>
 
-        {/* Two-column staggered grid */}
         <div className="flex gap-6 items-start">
-          {/* Left column */}
           <div className="flex-1 flex flex-col gap-6">
             {leftCol.map((item, i) => (
               <WorkCard
@@ -203,7 +227,6 @@ export default function Work({ items }: { items: PortfolioItem[] }) {
             ))}
             <CTABox />
           </div>
-          {/* Right column — staggered down */}
           <div className="flex-1 flex flex-col gap-6 pt-[240px]">
             {rightCol.map((item, i) => (
               <WorkCard
