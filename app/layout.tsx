@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter, Geist_Mono, Playfair_Display } from "next/font/google";
 import { SanityLive } from "@/sanity/lib/live";
+import Preloader from "./components/Preloader";
+import PageTransition from "./components/PageTransition";
 import "./globals.css";
 
 const inter = Inter({
@@ -35,7 +37,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${geistMono.variable} ${playfair.variable}`}>
       <body className="antialiased">
-        {children}
+        <Preloader />
+        <PageTransition>
+          {children}
+        </PageTransition>
         <SanityLive />
       </body>
     </html>
