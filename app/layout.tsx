@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import { Inter, Geist_Mono, Playfair_Display } from "next/font/google";
+import { SanityLive } from "@/sanity/lib/live";
 import "./globals.css";
 
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["300", "400", "500", "600", "700", "900"],
   style: ["normal", "italic"],
 });
 
@@ -32,9 +33,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${inter.variable} ${geistMono.variable} ${playfair.variable} antialiased`}>
+    <html lang="en" className={`${inter.variable} ${geistMono.variable} ${playfair.variable}`}>
+      <body className="antialiased">
         {children}
+        <SanityLive />
       </body>
     </html>
   );
